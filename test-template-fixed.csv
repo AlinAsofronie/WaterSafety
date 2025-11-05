@@ -1,0 +1,2 @@
+Asset Barcode,Asset Type,Status,Primary Identifier,Secondary Identifier,Wing,Wing In Short,Room,Floor,Floor In Words,Room No,Room Name,Filter Needed,Filters On,Filter Expiry Date,Filter Installed On,Filter Type,Need Flushing,Notes,Augmented Care,Low Usage Asset,Filter Removed
+SAMPLE-001,Water Tap,ACTIVE,Main Water Tap,Kitchen Area,North Wing,NW,Kitchen,Ground Floor,Ground,101,Main Kitchen,TRUE,TRUE,31/12/2024,01/01/2024,Standard,FALSE,Sample notes here,FALSE,FALSE,FALSE
