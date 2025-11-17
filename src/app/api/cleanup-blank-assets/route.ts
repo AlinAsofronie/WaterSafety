@@ -1,12 +1,12 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { DynamoDBService } from '@/lib/dynamodb';
+import { DatabaseService } from '@/lib/db';
 
 export async function GET() {
   try {
     console.log('=== IDENTIFYING BLANK ASSETS ===');
     
     // Get all assets from the database
-    const allAssets = await DynamoDBService.getAllAssets();
+    const allAssets = await DatabaseService.getAllAssets();
     console.log(`Found ${allAssets.length} total assets in database`);
 
     // Identify blank/incomplete assets
@@ -102,7 +102,7 @@ export async function DELETE(request: NextRequest) {
     console.log('=== DELETING BLANK ASSETS ===');
     
     // Get all assets from the database
-    const allAssets = await DynamoDBService.getAllAssets();
+    const allAssets = await DatabaseService.getAllAssets();
     
     // Identify blank/incomplete assets (same logic as GET)
     const blankAssets = allAssets.filter(asset => {
@@ -136,11 +136,11 @@ export async function DELETE(request: NextRequest) {
         console.log(`Deleting blank asset: ${asset.assetBarcode} (ID: ${asset.id})`);
         
         // Delete the asset
-        await DynamoDBService.deleteAsset(asset.id);
+        await DatabaseService.deleteAsset(asset.id);
         
         // Log audit entry for deletion
         try {
-          await DynamoDBService.logAssetAuditEntry({
+          await DatabaseService.logAssetAuditEntry({
             assetId: asset.id,
             timestamp: new Date().toISOString(),
             user: 'System Cleanup',

@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { DynamoDBService } from '@/lib/dynamodb';
+import { DatabaseService } from '@/lib/db';
 
 // GET /api/assets - Get all assets
 export async function GET() {
@@ -7,9 +7,9 @@ export async function GET() {
     console.log('Fetching assets from DynamoDB...');
     
     // Ensure table exists
-    await DynamoDBService.createTableIfNotExists();
+    await DatabaseService.createTableIfNotExists();
     
-    const assets = await DynamoDBService.getAllAssets();
+    const assets = await DatabaseService.getAllAssets();
     
     console.log(`Found ${assets.length} assets`);
     
@@ -42,9 +42,9 @@ export async function POST(request: NextRequest) {
     console.log('Creating asset in DynamoDB:', body);
     
     // Ensure table exists
-    await DynamoDBService.createTableIfNotExists();
+    await DatabaseService.createTableIfNotExists();
     
-    const newAsset = await DynamoDBService.createAsset({
+    const newAsset = await DatabaseService.createAsset({
       ...body,
       createdBy: 'Current User',
       modifiedBy: 'Current User',

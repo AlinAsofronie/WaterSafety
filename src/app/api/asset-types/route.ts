@@ -1,10 +1,10 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { DynamoDBService } from '@/lib/dynamodb';
+import { DatabaseService } from '@/lib/db';
 
 // GET - Fetch all asset types
 export async function GET() {
   try {
-    const assetTypes = await DynamoDBService.getAllAssetTypes();
+    const assetTypes = await DatabaseService.getAllAssetTypes();
     
     return NextResponse.json({
       success: true,
@@ -34,7 +34,7 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    const newAssetType = await DynamoDBService.createAssetType(label, createdBy || 'user');
+    const newAssetType = await DatabaseService.createAssetType(label, createdBy || 'user');
     
     return NextResponse.json({
       success: true,
@@ -64,7 +64,7 @@ export async function PUT(request: NextRequest) {
       );
     }
 
-    const updatedAssetType = await DynamoDBService.updateAssetType(typeId, label);
+    const updatedAssetType = await DatabaseService.updateAssetType(typeId, label);
     
     return NextResponse.json({
       success: true,
@@ -95,7 +95,7 @@ export async function DELETE(request: NextRequest) {
     }
 
     // Find the asset type by label to get its typeId
-    const assetTypes = await DynamoDBService.getAllAssetTypes();
+    const assetTypes = await DatabaseService.getAllAssetTypes();
     const assetType = assetTypes.find(type => type.label === label);
     
     if (!assetType) {
@@ -105,7 +105,7 @@ export async function DELETE(request: NextRequest) {
       );
     }
 
-    await DynamoDBService.deleteAssetType(assetType.typeId);
+    await DatabaseService.deleteAssetType(assetType.typeId);
     
     return NextResponse.json({
       success: true,

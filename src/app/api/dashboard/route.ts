@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import { DynamoDBService } from '@/lib/dynamodb';
+import { DatabaseService } from '@/lib/db';
 
 // GET /api/dashboard - Get dashboard statistics
 export async function GET() {
@@ -7,9 +7,9 @@ export async function GET() {
     console.log('Fetching dashboard stats from DynamoDB...');
     
     // Ensure table exists
-    await DynamoDBService.createTableIfNotExists();
+    await DatabaseService.createTableIfNotExists();
     
-    const stats = await DynamoDBService.getDashboardStats();
+    const stats = await DatabaseService.getDashboardStats();
     
     // Fetch SPListItems data
     let spListData = null;

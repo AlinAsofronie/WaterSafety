@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { DynamoDBService } from '@/lib/dynamodb';
+import { DatabaseService } from '@/lib/db';
 
 // GET /api/assets/[id] - Get asset by ID
 export async function GET(
@@ -10,7 +10,7 @@ export async function GET(
     const { id } = await params;
     console.log('Fetching asset by ID:', id);
     
-    const asset = await DynamoDBService.getAssetById(id);
+    const asset = await DatabaseService.getAssetById(id);
     
     if (!asset) {
       return NextResponse.json(
@@ -52,7 +52,7 @@ export async function PUT(
     const body = await request.json();
     console.log('Updating asset in DynamoDB:', id, body);
     
-    const updatedAsset = await DynamoDBService.updateAsset(id, {
+    const updatedAsset = await DatabaseService.updateAsset(id, {
       ...body,
       modifiedBy: 'Current User',
     });
@@ -87,7 +87,7 @@ export async function DELETE(
     const { id } = await params;
     console.log('Deleting asset from DynamoDB:', id);
     
-    await DynamoDBService.deleteAsset(id);
+    await DatabaseService.deleteAsset(id);
     
     console.log('Asset deleted successfully:', id);
     

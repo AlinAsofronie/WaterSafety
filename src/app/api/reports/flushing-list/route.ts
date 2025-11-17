@@ -1,12 +1,12 @@
 import { NextResponse } from 'next/server';
-import { DynamoDBService } from '@/lib/dynamodb';
+import { DatabaseService } from '@/lib/db';
 
 export async function GET() {
   try {
     console.log('GET /api/reports/flushing-list: Starting request');
     
     // Get all assets from the database
-    const allAssets = await DynamoDBService.getAllAssets();
+    const allAssets = await DatabaseService.getAllAssets();
     console.log(`Found ${allAssets.length} total assets in database`);
 
     // Flushing List - Assets that need flushing OR are low usage

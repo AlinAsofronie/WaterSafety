@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { DynamoDBService } from '@/lib/dynamodb';
+import { DatabaseService } from '@/lib/db';
 
 export async function POST(request: NextRequest) {
   try {
@@ -26,7 +26,7 @@ export async function POST(request: NextRequest) {
 
     console.log('Creating audit entry:', auditEntry);
 
-    await DynamoDBService.logAssetAuditEntry(auditEntry);
+    await DatabaseService.logAssetAuditEntry(auditEntry);
 
     console.log('Audit entry created successfully');
 

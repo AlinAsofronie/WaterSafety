@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { DynamoDBService } from '@/lib/dynamodb';
+import { DatabaseService } from '@/lib/db';
 import * as XLSX from 'xlsx';
 
 interface BulkUploadResult {
@@ -183,11 +183,11 @@ export async function POST(request: NextRequest) {
     }
 
     // Get existing assets to check for duplicates
-    const existingAssets = await DynamoDBService.getAllAssets();
+    const existingAssets = await DatabaseService.getAllAssets();
     const existingBarcodes = new Set(existingAssets.map(asset => asset.assetBarcode?.trim()).filter(Boolean));
 
     // Get existing asset types
-    const existingAssetTypes = await DynamoDBService.getAllAssetTypes();
+    const existingAssetTypes = await DatabaseService.getAllAssetTypes();
     const existingTypeLabels = new Set(existingAssetTypes.map(type => type.label));
 
     const results: BulkUploadResult = {
@@ -248,7 +248,7 @@ export async function POST(request: NextRequest) {
         // Auto-create asset type if provided and doesn't exist (case-insensitive)
         if (normalizedAssetType && !Array.from(existingTypeLabels).map(t => t.toLowerCase()).includes(normalizedAssetType)) {
           try {
-            await DynamoDBService.createAssetType(assetTypeValue, 'bulk-upload');
+            await DatabaseService.createAssetType(assetTypeValue, 'bulk-upload');
             existingTypeLabels.add(assetTypeValue);
             results.newAssetTypes.push(assetTypeValue);
           } catch (error) {
@@ -319,13 +319,13 @@ export async function POST(request: NextRequest) {
         });
 
         // Save to DynamoDB
-        const newAsset = await DynamoDBService.createAsset(asset);
+        const newAsset = await DatabaseService.createAsset(asset);
         existingBarcodes.add(assetBarcode);
         results.success++;
 
         // Log audit entry for this asset
         try {
-          await DynamoDBService.logAssetAuditEntry({
+          await DatabaseService.logAssetAuditEntry({
             assetId: newAsset.id,
             timestamp: new Date().toISOString(),
             user: 'bulk-upload',

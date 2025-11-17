@@ -4,7 +4,7 @@ import {
   DynamoDBDocumentClient, 
   ScanCommand
 } from '@aws-sdk/lib-dynamodb';
-import { DynamoDBService } from '@/lib/dynamodb';
+import { DatabaseService } from '@/lib/db';
 
 const client = new DynamoDBClient({
   region: process.env.AMPLIFY_AWS_REGION || 'eu-west-2',
@@ -63,8 +63,8 @@ export async function GET(
     
     try {
       // Fetch all assets using the same service as the Assets API to ensure consistency
-      console.log('Fetching all assets using DynamoDBService...');
-      const assets = await DynamoDBService.getAllAssets();
+      console.log('Fetching all assets using DatabaseService...');
+      const assets = await DatabaseService.getAllAssets();
 
       // Collect all related barcodes (current + historical)
       const relatedBarcodes = new Set([assetBarcode]); // Start with the searched barcode

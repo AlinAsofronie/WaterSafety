@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { DynamoDBService } from '@/lib/dynamodb';
+import { DatabaseService } from '@/lib/db';
 
 export async function GET(request: NextRequest) {
   try {
@@ -15,7 +15,7 @@ export async function GET(request: NextRequest) {
     if (assetId) {
       // Get audit entries for specific asset with pagination
       console.log('Fetching paginated audit entries for asset:', assetId);
-      result = await DynamoDBService.getAssetAuditEntriesPaginated(
+      result = await DatabaseService.getAssetAuditEntriesPaginated(
         assetId, 
         limit, 
         lastEvaluatedKey ? JSON.parse(decodeURIComponent(lastEvaluatedKey)) : undefined
@@ -24,7 +24,7 @@ export async function GET(request: NextRequest) {
     } else {
       // Get all audit entries with pagination (global audit log)
       console.log('Fetching paginated all audit entries');
-      result = await DynamoDBService.getAllAuditEntriesPaginated(
+      result = await DatabaseService.getAllAuditEntriesPaginated(
         limit, 
         lastEvaluatedKey ? JSON.parse(decodeURIComponent(lastEvaluatedKey)) : undefined
       );
@@ -55,7 +55,7 @@ export async function DELETE(request: NextRequest) {
     console.log('Resetting audit log - deleting all audit entries');
     
     // Delete all audit entries
-    await DynamoDBService.deleteAllAuditEntries();
+    await DatabaseService.deleteAllAuditEntries();
     
     return NextResponse.json({ 
       success: true, 

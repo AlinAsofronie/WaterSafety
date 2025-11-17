@@ -1,12 +1,12 @@
 import { NextResponse } from 'next/server';
-import { DynamoDBService } from '@/lib/dynamodb';
+import { DatabaseService } from '@/lib/db';
 
 export async function GET() {
   try {
     console.log('GET /api/reports/filter-expiry: Starting request (v3)');
     
     // Get all assets from the database
-    const allAssets = await DynamoDBService.getAllAssets();
+    const allAssets = await DatabaseService.getAllAssets();
     console.log(`Found ${allAssets.length} total assets in database`);
 
     // Helper function to get current week range (Monday to Sunday)

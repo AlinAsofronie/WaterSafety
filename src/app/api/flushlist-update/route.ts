@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import * as XLSX from 'xlsx';
-import { DynamoDBService } from '@/lib/dynamodb';
+import { DatabaseService } from '@/lib/db';
 
 export async function POST(request: NextRequest) {
   try {
@@ -62,7 +62,7 @@ export async function POST(request: NextRequest) {
 
     // Get all assets from the database
     console.log('Fetching all assets from database...');
-    const allAssets = await DynamoDBService.getAllAssets();
+    const allAssets = await DatabaseService.getAllAssets();
     console.log(`Found ${allAssets.length} total assets in database`);
 
     // Track changes for audit logging
@@ -88,7 +88,7 @@ export async function POST(request: NextRequest) {
           console.log(`Updating ${asset.assetBarcode}: needFlushing ${currentNeedFlushing} -> ${shouldFlush}`);
           
           // Update the asset using the correct asset ID, not barcode
-          await DynamoDBService.updateAsset(asset.id, {
+          await DatabaseService.updateAsset(asset.id, {
             needFlushing: shouldFlush,
             modified: new Date().toISOString(),
             modifiedBy: userEmail
@@ -135,7 +135,7 @@ export async function POST(request: NextRequest) {
     let auditEntriesCreated = 0;
     for (const entry of auditEntries) {
       try {
-        await DynamoDBService.logAssetAuditEntry(entry);
+        await DatabaseService.logAssetAuditEntry(entry);
         auditEntriesCreated++;
       } catch (error) {
         console.error('Error creating audit entry:', error);

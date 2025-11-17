@@ -26,6 +26,11 @@ A comprehensive water asset management system built with Next.js, featuring real
 
 ## Prerequisites
 
+**For Local Development (Recommended):**
+- Node.js 18+ and npm only!
+- No AWS account or credentials needed
+
+**For Production/AWS Integration:**
 - Node.js 18+ and npm
 - AWS Account with:
   - DynamoDB access
@@ -33,7 +38,9 @@ A comprehensive water asset management system built with Next.js, featuring real
   - SES for email notifications
   - Valid AWS credentials (Access Key ID and Secret Access Key)
 
-## Local Development Setup
+## Local Development Setup (No AWS Required!)
+
+This application can run entirely locally without any AWS services. This is the **recommended setup for development**.
 
 ### 1. Clone the repository
 
@@ -48,26 +55,23 @@ cd WaterSafety
 npm install --legacy-peer-deps
 ```
 
-### 3. Configure environment variables
+### 3. Configure for local development
 
-Create a `.env.local` file in the root directory with the following variables:
+Copy the `.env.example` file to `.env.local`:
 
-```env
-# AWS Configuration
-AMPLIFY_ACCESS_KEY_ID=your-aws-access-key-id
-AMPLIFY_SECRET_ACCESS_KEY=your-aws-secret-access-key
-AMPLIFY_AWS_REGION=eu-west-2
-
-# Alternative AWS credentials (used by some services)
-AWS_ACCESS_KEY_ID=your-aws-access-key-id
-AWS_SECRET_ACCESS_KEY=your-aws-secret-access-key
-AWS_REGION=eu-west-2
-
-# SES Email Configuration
-SES_FROM_EMAIL=noreply@water.facilities-stg.co.uk
+```bash
+cp .env.example .env.local
 ```
 
-**Important**: Replace the placeholder values with your actual AWS credentials.
+The default configuration in `.env.local` enables local-only mode:
+
+```env
+# Local Development Mode - No AWS required!
+USE_LOCAL_STORAGE=true
+NEXT_PUBLIC_USE_LOCAL_AUTH=true
+```
+
+**That's it!** You don't need any AWS credentials for local development.
 
 ### 4. Run the development server
 
@@ -76,6 +80,39 @@ npm run dev
 ```
 
 The application will be available at [http://localhost:3000](http://localhost:3000)
+
+### What's Different in Local Mode?
+
+When running locally (with `USE_LOCAL_STORAGE=true` and `NEXT_PUBLIC_USE_LOCAL_AUTH=true`):
+
+- **Database**: Uses in-memory storage instead of DynamoDB
+  - Sample data is automatically loaded
+  - Data persists during the session but resets on restart
+  - All CRUD operations work normally
+
+- **Authentication**: Bypasses AWS Cognito
+  - Automatically logs you in as a local developer
+  - No username/password required
+  - You can test auth flows without Cognito
+
+- **Email**: Mocks AWS SES
+  - Email content is logged to the console instead of being sent
+  - Perfect for testing email features without sending real emails
+
+### Switching to AWS Services
+
+To connect to real AWS services, update your `.env.local`:
+
+```env
+# Disable local mode
+USE_LOCAL_STORAGE=false
+NEXT_PUBLIC_USE_LOCAL_AUTH=false
+
+# Add your AWS credentials
+AMPLIFY_ACCESS_KEY_ID=your-actual-aws-access-key
+AMPLIFY_SECRET_ACCESS_KEY=your-actual-aws-secret-key
+AMPLIFY_AWS_REGION=eu-west-2
+```
 
 ## Available Scripts
 

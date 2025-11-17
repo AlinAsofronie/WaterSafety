@@ -3,7 +3,7 @@ import * as XLSX from 'xlsx';
 import { DynamoDBDocumentClient, PutCommand, GetCommand, ScanCommand, UpdateCommand, QueryCommand } from "@aws-sdk/lib-dynamodb";
 import { DynamoDBClient } from '@aws-sdk/client-dynamodb';
 import { getCurrentUser, formatTimestamp } from '@/lib/utils';
-import { DynamoDBService } from '@/lib/dynamodb';
+import { DatabaseService } from '@/lib/db';
 
 // Configure DynamoDB client
 const client = new DynamoDBClient({
@@ -656,11 +656,11 @@ export async function POST(req: NextRequest) {
           };
           
           console.log(`Row ${rowNum}: Audit entry created:`, auditEntry);
-          console.log(`Row ${rowNum}: Calling DynamoDBService.logAssetAuditEntry...`);
+          console.log(`Row ${rowNum}: Calling DatabaseService.logAssetAuditEntry...`);
           
-          await DynamoDBService.logAssetAuditEntry(auditEntry);
+          await DatabaseService.logAssetAuditEntry(auditEntry);
           
-          console.log(`Row ${rowNum}: DynamoDBService.logAssetAuditEntry completed successfully`);
+          console.log(`Row ${rowNum}: DatabaseService.logAssetAuditEntry completed successfully`);
           
           auditLogEntries.push(auditEntry);
           console.log('Audit log entry written:', auditEntry);
